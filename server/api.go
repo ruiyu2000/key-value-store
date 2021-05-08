@@ -17,6 +17,8 @@ func Start() {
 	e := echo.New()
 	e.GET("/:key", api.handleGet)
 	e.POST("/:key", api.handleSet)
+	e.DELETE("/:key", api.handleDelete)
+
 	e.Logger.Fatal(e.Start(":1337"))
 }
 
@@ -36,5 +38,12 @@ func (api API) handleSet(c echo.Context) error {
 	value := c.FormValue("value")
 
 	api.cache.Set(key, value)
+	return nil
+}
+
+func (api API) handleDelete(c echo.Context) error {
+	key := c.Param("key")
+
+	api.cache.Delete(key)
 	return nil
 }

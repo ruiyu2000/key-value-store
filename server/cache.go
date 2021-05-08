@@ -25,3 +25,7 @@ func (c Cache) Get(key string) (value string, err error) {
 func (c Cache) Set(key string, value string) {
 	c.cache[key] = value
 }
+
+func (c Cache) Delete(key string) {
+	delete(c.cache, key)
+}
