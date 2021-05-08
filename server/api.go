@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"net/http"
 )
 
@@ -12,14 +13,22 @@ type API struct {
 
 func Start() {
 	cache := NewCache()
+	e := NewAPI(cache)
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	e.Logger.Fatal(e.Start(":1337"))
+}
+
+func NewAPI(cache *Cache) (e *echo.Echo) {
 	api := &API{cache: cache}
 
-	e := echo.New()
+	e = echo.New()
 	e.GET("/:key", api.handleGet)
 	e.POST("/:key", api.handleSet)
 	e.DELETE("/:key", api.handleDelete)
 
-	e.Logger.Fatal(e.Start(":1337"))
+	return e
 }
 
 func (api API) handleGet(c echo.Context) error {
