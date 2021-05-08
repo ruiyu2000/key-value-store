@@ -3,23 +3,25 @@ package server
 import "errors"
 
 type Cache struct {
-	cache map[string]interface{}
+	cache map[string]string
 }
+
+var ErrNotFound = errors.New("not found")
 
 func NewCache() *Cache {
 	return &Cache{
-		cache: make(map[string]interface{}),
+		cache: make(map[string]string),
 	}
 }
 
-func (c Cache) Get(key string) (value interface{}, err error) {
+func (c Cache) Get(key string) (value string, err error) {
 	value, ok := c.cache[key]
 	if !ok {
-		return nil, errors.New("not found")
+		return "", ErrNotFound
 	}
 	return value, nil
 }
 
-func (c Cache) Set(key string, value interface{}) {
+func (c Cache) Set(key string, value string) {
 	c.cache[key] = value
 }

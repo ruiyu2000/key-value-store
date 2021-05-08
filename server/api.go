@@ -25,10 +25,10 @@ func (api API) handleGet(c echo.Context) error {
 
 	value, err := api.cache.Get(key)
 	if err != nil {
-		return nil
+		return c.String(http.StatusNotFound, fmt.Sprintf("[%s]", err.Error()))
 	}
 
-	return c.String(http.StatusOK, fmt.Sprintf("%v", value))
+	return c.String(http.StatusOK, value)
 }
 
 func (api API) handleSet(c echo.Context) error {
